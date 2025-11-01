@@ -1,0 +1,26 @@
+server.port=8080
+
+spring.application.name=ChatBot
+
+# Disable JPA/Hibernate autoconfiguration for now
+spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+# Logging
+logging.level.root=INFO
+logging.level.com.chatbot=DEBUG
+
+# Supabase
+supabase.url=https://your-project.supabase.co
+supabase.key=your-supabase-anon-key
+supabase.service-key=your-supabase-service-key
+
+# Gemini API
+gemini.api-key=YOUR_GEMINI_API_KEY_HERE
+gemini.model=gemini-pro
+
+# JWT
+jwt.secret=generate-a-random-secret-with-sufficient-entropy
+jwt.expiration=86400000
+
+# CORS
+app.cors.allowedOrigins=http://localhost:3000

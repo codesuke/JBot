@@ -1,0 +1,14 @@
+{
+  "name": "java-chatbot-server",
+  "version": "1.0.0",
+  "description": "Java ChatBot Backend Server",
+  "main": "index.js",
+  "scripts": {
+    "dev": "gradle bootRun",
+    "build": "gradle build",
+    "test": "gradle test"
+  },
+  "keywords": ["java", "spring-boot", "chatbot", "ai"],
+  "author": "",
+  "license": "ISC"
+}
