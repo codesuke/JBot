@@ -137,7 +137,7 @@ Check out the project in action! Here's what the application looks like:
 ### 🌙 Dark Theme
 ![Dark Theme](./showcase/Dark%20Theme.png)
 
-### 💬 Chat Interface
+### 💬 Meme Page :>
 ![Chat Interface](./showcase/cat.png)
 
 ### 👥 User Profiles
