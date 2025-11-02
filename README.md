@@ -517,8 +517,8 @@ See LICENSE file for details
 
 **[⬆ Back to Top](#-java-chatbot)**
 
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?logo=github)](https://github.com)
-[![Twitter](https://img.shields.io/badge/Twitter-Follow-1DA1F2?logo=twitter&logoColor=white)](https://twitter.com)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?logo=github)](https://github.com/codeuske)
+[![Twitter](https://img.shields.io/badge/Twitter-Follow-1DA1F2?logo=twitter&logoColor=white)](https://twitter.com/codesuke)
 [![Support](https://img.shields.io/badge/Support-Buy%20Me%20Coffee-yellow?logo=buy-me-a-coffee&logoColor=white)](https://www.buymeacoffee.com)
 
 </div>
