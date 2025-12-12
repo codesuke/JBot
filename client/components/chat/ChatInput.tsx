@@ -18,6 +18,7 @@ import { MODELS } from "@/lib/constants";
 interface ChatInputProps {
   onSend: (message: string, model: string) => void;
   isLoading?: boolean;
+  disabled?: boolean;
 }
 
 const AI_MODELS = [
@@ -80,7 +81,7 @@ const MODEL_ICONS: Record<string, React.ReactNode> = {
     ),
 };
 
-export function ChatInput({ onSend, isLoading }: ChatInputProps) {
+export function ChatInput({ onSend, isLoading, disabled }: ChatInputProps) {
     const [value, setValue] = useState("");
     const { textareaRef, adjustHeight } = useAutoResizeTextarea({
         minHeight: 72,
@@ -122,7 +123,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
                         <Textarea
                             id="chat-input"
                             value={value}
-                            placeholder={"What can I do for you?"}
+                            placeholder={disabled ? "Offline - waiting for connection..." : "What can I do for you?"}
                             className={cn(
                                 "w-full rounded-xl rounded-b-none px-4 py-3 bg-muted/50 border-none text-foreground placeholder:text-muted-foreground resize-none focus-visible:ring-0 focus-visible:ring-offset-0",
                                 "min-h-[72px]"
@@ -133,7 +134,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
                                 setValue(e.target.value);
                                 adjustHeight();
                             }}
-                            disabled={isLoading}
+                            disabled={isLoading || disabled}
                         />
                     </div>
 
@@ -231,12 +232,12 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
                                     "disabled:opacity-50 disabled:cursor-not-allowed"
                                 )}
                                 aria-label="Send message"
-                                disabled={!value.trim() || isLoading}
+                                disabled={!value.trim() || isLoading || disabled}
                             >
                                 <ArrowRight
                                     className={cn(
                                         "w-4 h-4 transition-opacity duration-200",
-                                        value.trim() && !isLoading
+                                        value.trim() && !isLoading && !disabled
                                             ? "opacity-100"
                                             : "opacity-40"
                                     )}

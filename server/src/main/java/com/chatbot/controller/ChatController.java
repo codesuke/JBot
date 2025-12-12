@@ -3,6 +3,7 @@ package com.chatbot.controller;
 import com.chatbot.dto.ChatRequest;
 import com.chatbot.dto.ChatResponse;
 import com.chatbot.service.ChatService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class ChatController {
     private final ChatService chatService;
     
     @PostMapping("/send")
-    public ResponseEntity<ChatResponse> sendMessage(@RequestBody ChatRequest request) {
+    public ResponseEntity<ChatResponse> sendMessage(@Valid @RequestBody ChatRequest request) {
         ChatResponse response = chatService.sendMessage(request);
         return ResponseEntity.ok(response);
     }
@@ -31,6 +32,9 @@ public class ChatController {
     @GetMapping("/message/{messageId}")
     public ResponseEntity<ChatResponse> getMessage(@PathVariable Long messageId) {
         ChatResponse message = chatService.getMessage(messageId);
+        if (message == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(message);
     }
     

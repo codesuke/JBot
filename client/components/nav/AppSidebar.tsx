@@ -28,14 +28,25 @@ import {
   HelpCircle,
   ChevronUp,
   MessageCircle,
-  Archive,
+  Plus,
+  Trash2,
+  MoreHorizontal,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useChatStore } from '@/store/useChatStore';
+import { cn } from '@/lib/utils';
 
 export function AppSidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { 
+    conversations, 
+    activeConversationId, 
+    setActiveConversation, 
+    createConversation,
+    deleteConversation 
+  } = useChatStore();
 
   // Main navigation items
   const mainItems = [
@@ -67,21 +78,23 @@ export function AppSidebar() {
     },
   ];
 
-  // Quick action items
-  const quickItems = [
-    {
-      title: 'New Chat',
-      url: '/chat/new',
-      icon: MessageCircle,
-    },
-    {
-      title: 'Saved',
-      url: '/saved',
-      icon: Archive,
-    },
-  ];
-
   const isActive = (url: string) => pathname === url;
+
+  const handleNewChat = () => {
+    const newId = createConversation();
+    setActiveConversation(newId);
+  };
+
+  const formatDate = (date: Date) => {
+    const now = new Date();
+    const d = new Date(date);
+    const diffDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    return d.toLocaleDateString();
+  };
 
   return (
     <Sidebar collapsible="icon" variant="sidebar" className="border-r">
@@ -95,6 +108,17 @@ export function AppSidebar() {
             <span className="font-semibold">JBot</span>
             <span className="text-xs text-muted-foreground">AI Assistant</span>
           </div>
+        </div>
+        
+        {/* New Chat Button in Sidebar */}
+        <div className="px-2 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
+          <button
+            onClick={handleNewChat}
+            className="flex items-center gap-2 w-full px-3 py-2 rounded-lg border border-dashed border-border hover:bg-accent hover:border-primary/50 transition-colors group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center"
+          >
+            <Plus className="h-4 w-4" />
+            <span className="text-sm group-data-[collapsible=icon]:hidden">New Chat</span>
+          </button>
         </div>
       </SidebarHeader>
 
@@ -128,28 +152,64 @@ export function AppSidebar() {
 
         <SidebarSeparator />
 
-        {/* Quick Actions */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Quick Access</SidebarGroupLabel>
-          <SidebarGroupContent>
+        {/* Chat History */}
+        <SidebarGroup className="flex-1 overflow-hidden">
+          <SidebarGroupLabel>Chat History</SidebarGroupLabel>
+          <SidebarGroupContent className="overflow-y-auto max-h-[300px]">
             <SidebarMenu>
-              {quickItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <SidebarMenuItem key={item.url}>
+              {conversations.length === 0 ? (
+                <div className="px-3 py-4 text-xs text-muted-foreground text-center group-data-[collapsible=icon]:hidden">
+                  No conversations yet
+                </div>
+              ) : (
+                conversations.slice(0, 20).map((convo) => (
+                  <SidebarMenuItem key={convo.id} className="group/item relative">
                     <SidebarMenuButton
-                      asChild
-                      isActive={isActive(item.url)}
-                      className="hover:bg-accent"
+                      isActive={activeConversationId === convo.id}
+                      onClick={() => setActiveConversation(convo.id)}
+                      className={cn(
+                        "hover:bg-accent cursor-pointer w-full pr-8",
+                        activeConversationId === convo.id && "bg-accent"
+                      )}
                     >
-                      <Link href={item.url}>
-                        <Icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                      </Link>
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <MessageCircle className="h-4 w-4 shrink-0" />
+                        <div className="flex flex-col min-w-0 group-data-[collapsible=icon]:hidden">
+                          <span className="text-sm truncate">{convo.title}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {formatDate(convo.updatedAt)}
+                          </span>
+                        </div>
+                      </div>
                     </SidebarMenuButton>
+                    {/* Dropdown positioned outside the button */}
+                    <div className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover/item:opacity-100 transition-opacity group-data-[collapsible=icon]:hidden">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button 
+                            className="p-1 hover:bg-accent rounded"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-32">
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteConversation(convo.id);
+                            }}
+                            className="text-destructive focus:text-destructive cursor-pointer"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </SidebarMenuItem>
-                );
-              })}
+                ))
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
